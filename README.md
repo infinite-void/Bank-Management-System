@@ -1,5 +1,5 @@
-#DataBase Management Systems CS6106 
-#Project - A Simple Bank Management System
+<b>DataBase Management Systems CS6106 <br>
+<b>Project - A Simple Bank Management System<br>
 <br>
 GO TO THE DOCUMENTATION FOLDER THE APPLICATION AND DATABASE DOCUMENTATION<br>
 <br>
