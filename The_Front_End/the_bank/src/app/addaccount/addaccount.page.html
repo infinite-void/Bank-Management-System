@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Employee</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label position="floating" >Branch</ion-label>
+      <ion-input [(ngModel)]="ifsc"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Account Type</ion-label>
+      <ion-input [(ngModel)]="acctype"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >CustomerID</ion-label>
+      <ion-input [(ngModel)]="cusid"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="addaccount()" >Add Account</ion-button>
+    </ion-item>
+  </ion-card>
+</ion-content>

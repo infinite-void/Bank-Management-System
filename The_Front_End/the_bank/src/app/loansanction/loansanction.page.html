@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Loan Sanction</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label position="floating" >Branch IFSC</ion-label>
+      <ion-input [(ngModel)]="ifsc"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >CustomerID</ion-label>
+      <ion-input [(ngModel)]="cusid"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Principle</ion-label>
+      <ion-input [(ngModel)]="principle"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Loan Security</ion-label>
+      <ion-input [(ngModel)]="sec"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >LoanType</ion-label>
+      <ion-input [(ngModel)]="loantype"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Approved By</ion-label>
+      <ion-input [(ngModel)]="approval"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="sanctionloan()" >Sanction Loan</ion-button>
+    </ion-item>
+  </ion-card>
+</ion-content>

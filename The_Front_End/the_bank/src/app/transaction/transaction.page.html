@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Transaction</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label position="floating" >Debit Account Number</ion-label>
+      <ion-input [(ngModel)]="daccno"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Debit IFSC</ion-label>
+      <ion-input [(ngModel)]="difsc"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Credit Account Number</ion-label>
+      <ion-input [(ngModel)]="caccno"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Credit IFSC</ion-label>
+      <ion-input [(ngModel)]="cifsc"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Amount</ion-label>
+      <ion-input [(ngModel)]="amt"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="addtrans()" >Transact</ion-button>
+    </ion-item>
+  </ion-card>
+</ion-content>

@@ -1,10 +1,9 @@
 var express = require('express');
 var app = express();
 var mysql = require('mysql');
-var body = require('body-parser')
-var cors = require('cors')
-
-//app.use(cors({ origin: ['http://localhost:8100/'], credentials: true }))
+var body = require('body-parser');
+var cors = require('cors');
+var passwordHash = require('password-hash');
 app.use(cors())
 app.use(function (req, res, next) {
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -12,17 +11,53 @@ app.use(function (req, res, next) {
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 	res.setHeader('Access-Control-Allow-Credentials', true);
 	next();
-	});
+});
+
+/*Storing the DATABASE CONNECTION VARIABLE*/
 var con = mysql.createPool({
-connectionLimit : 10,
+connectionLimit : 200,
   host: "localhost",
   port: "3307",
   user: "root",
   password: "srinathsk0528", 
-  database: "the_bank",
+  database: "TheBank",
   insecureAuth : true
 });
 
+/*THIS IS FOR EMPLOYEE LOGIN*/
+app.get('/login', function (req, res) {
+	user = req.query.user;
+	pass = req.query.pass;
+	con.getConnection(function(err) {
+		if (err) {
+			console.log(err);
+			res.end(err['sqlMessage']);
+		}
+		con.query("SELECT LOGPASSWORD FROM EMPLOYEES WHERE EMPLOYEEID="+mysql.escape(user)+";", function (err, result, fields) {
+		  if (err) {
+			  console.log(err);
+			  res.end('1');
+		  }
+		  if(result.length) {
+			if(passwordHash.verify(pass, result[0].LOGPASSWORD)) {
+				console.log('Employee ' + user + ' is logged in...');  
+				res.end('11');
+			}
+		  	else {
+				console.log('Failed login attempt of employee '+ user + '...');  
+				res.end('12');
+			  }
+		  }
+		  else {
+			console.log('Invalid employee ID ' + user + '...');
+			res.end('22');
+		  }
+		});
+	 }); 
+});
+
+
+/*THIS API CALL ADDS BRANCH TO DATABASE*/
 app.get('/addbranch', function (req, res) {
 	insertifsc = req.query.ifsc;
 	insertarea = req.query.area;
@@ -40,13 +75,14 @@ app.get('/addbranch', function (req, res) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
+		  console.log('Branch ' + insertifsc + ' added successfully...');
 		  res.end('1');
 		});
-	 });
-	 
+	 });	 
 });
 
+
+/*THIS API CALL ADDS EMPLOYEES TO DATABASE*/
 app.get('/addemployee', function (req, res) {
 	name = req.query.name;
 	dob = req.query.dob;
@@ -59,48 +95,24 @@ app.get('/addemployee', function (req, res) {
 	desig = req.query.designation;
 	passw = req.query.password;
 	ifsc = req.query.ifsc;
-	console.log(name);
+	var hashedPassword = passwordHash.generate(passw);
 	con.getConnection(function(err) {
 		if (err) {
 			console.log(err);
 			res.end(err['sqlMessage']);
 		}
-		con.query("INSERT INTO EMPLOYEES VALUES(NULL,"+mysql.escape(name)+", "+mysql.escape(sex)+", "+mysql.escape(dob)+","+ mysql.escape(ifsc)+","+mysql.escape(desig)+","+mysql.escape(salary)+","+mysql.escape(passw)+","+mysql.escape(add1)+","+mysql.escape(add2)+","+mysql.escape(city)+","+mysql.escape(postal)+");", function (err, result, fields) {
+		con.query("INSERT INTO EMPLOYEES VALUES(NULL,"+mysql.escape(name)+", "+mysql.escape(sex)+", "+mysql.escape(dob)+","+ mysql.escape(ifsc)+","+mysql.escape(desig)+","+mysql.escape(salary)+","+mysql.escape(hashedPassword)+","+mysql.escape(add1)+","+mysql.escape(add2)+","+mysql.escape(city)+","+mysql.escape(postal)+");", function (err, result, fields) {
 		  if (err) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
-		  console.log(result.insertId);
+		  console.log('Employee successfully added and was allotted the EmployeeID ' + result.insertId + '...');
 		  res.end(result.insertId.toString());
 		});
-	 });
-	 
-	 
+	 }); 
 });
 
-app.get('/loanpayment', function (req, res) {
-	insertifsc = req.query.ifsc;
-	insertlaccno = req.query.laccno;
-	insertamt = req.query.amt;
-	insertbifsc = req.query.bifsc;
-	con.getConnection(function(err) {
-		if (err) {
-			console.log(err)
-			res.end(err['sqlMessage']);
-		}
-		con.query("INSERT INTO LOANPAYMENTS VALUES(NULL, CURDATE(),"+mysql.escape(insertamt)+","+mysql.escape(insertlaccno)+","+mysql.escape(insertifsc)+", "+ mysql.escape(insertbifsc) +");", function (err, result, fields) {
-		  if (err) {
-			  console.log(err);
-			  res.end(err['sqlMessage']);
-		  }
-		  console.log(result);
-		  res.end(result.insertId.toString());
-		});
-	  });
-});
-
-
+/*THIS API CALL ADDS CUSTOMERS TO DATABASE*/
 app.get('/addcustomers', function (req, res) {
 	name = req.query.name;
 	dob = req.query.dob;
@@ -109,8 +121,6 @@ app.get('/addcustomers', function (req, res) {
 	add1 = req.query.add1;
 	add2 = req.query.add2;
 	postal = req.query.postal;
-	
-	console.log(name);
 	con.getConnection(function(err) {
 		if (err) {
 			console.log(err);
@@ -121,12 +131,13 @@ app.get('/addcustomers', function (req, res) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
+		  console.log('Customer was successfully added and was given the CustomerID ' + result.insertId + '...');
 		  res.end(result.insertId.toString());
 		});
 	 }); 
 });
 
+/*THIS API CALL ADDS ACCOUNTS TO DATABASE*/
 app.get('/addaccount', function (req, res) {
 	
 	acctype = req.query.acctype;
@@ -143,12 +154,13 @@ app.get('/addaccount', function (req, res) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
+		  console.log('Customer ' + cusid + ' now has an ' + acctype + ' account in ' + ifsc + ' with AccountNo ' + result.insertId+'...');
 		  res.end(result.insertId.toString());
 		});
 	 }); 
 });
 
+/*THIS API CALL ADD NEWLY SANCTIONED LOANS TO DATABASE*/
 app.get('/loansanction', function (req, res) {
 	loantype = req.query.loantype;
 	cusid = req.query.cusid;
@@ -167,24 +179,27 @@ app.get('/loansanction', function (req, res) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
+		  console.log('Customer ' + cusid + ' got a '+ loantype + ' loan sanctioned from ' + ifsc + ' with LoanAccountNo ' + result.insertId + '...');
 		  res.end(result.insertId.toString());
 		});
 	 }); 
 });
 
+/*THIS API CALL ADDS NEW TRANSACTIONS TO DATABASE*/
 app.get('/addtrans', function (req, res) {
 	daccno = req.query.daccno;
 	difsc = req.query.difsc;
 	caccno = req.query.caccno;
 	cifsc = req.query.cifsc;
 	amt = req.query.amt;
-	if(!daccno)
-	str = "INSERT INTO TRANSACTIONS VALUES(NULL, CURDATE(), "+mysql.escape(amt)+",NULL,"+mysql.escape(difsc)+","+mysql.escape(caccno)+","+mysql.escape(cifsc)+");";
-	if(!caccno)
-	str = "INSERT INTO TRANSACTIONS VALUES(NULL, CURDATE(), "+mysql.escape(amt)+","+mysql.escape(daccno)+","+mysql.escape(difsc)+",NULL,"+mysql.escape(cifsc)+");"
-	if(caccno && daccno)
-	str = "INSERT INTO TRANSACTIONS VALUES(NULL, CURDATE(), "+mysql.escape(amt)+","+mysql.escape(daccno)+","+mysql.escape(difsc)+","+mysql.escape(caccno)+","+mysql.escape(cifsc)+");"
+
+	if(caccno==null|| caccno==''|| cifsc=='') {
+		str = "INSERT INTO TRANSACTIONS VALUES(NULL, CURDATE(), "+mysql.escape(amt)+","+mysql.escape(daccno)+","+mysql.escape(difsc)+",NULL,NULL);"
+	}else if(daccno==null || daccno=='' || difsc=='') {
+		str = "INSERT INTO TRANSACTIONS VALUES(NULL, CURDATE(), "+mysql.escape(amt) +",NULL,NULL,"+mysql.escape(caccno)+","+mysql.escape(cifsc)+");";
+	}else if(!caccno && !daccno) {
+		str = "INSERT INTO TRANSACTIONS VALUES(NULL, CURDATE(), "+mysql.escape(amt)+","+mysql.escape(daccno)+","+mysql.escape(difsc)+","+mysql.escape(caccno)+","+mysql.escape(cifsc)+");"
+	}
 	con.getConnection(function(err) {
 		if (err) {
 			console.log(err);
@@ -195,12 +210,35 @@ app.get('/addtrans', function (req, res) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
+		  console.log('Transaction ID : ' +result.insertId+' From : ' + daccno +' '+ difsc + ' To : ' + caccno + ' ' + cifsc + ' Amount : '+amt + '...');
 		  res.end(result.insertId.toString());
 		});
 	 }); 
 });
 
+/*THIS API CALL ADDS TRANSACTIONS OF LOAN PAYMENTS TO DATABASE*/
+app.get('/loanpayment', function (req, res) {
+	insertifsc = req.query.ifsc;
+	insertlaccno = req.query.laccno;
+	insertamt = req.query.amt;
+	insertbifsc = req.query.bifsc;
+	con.getConnection(function(err) {
+		if (err) {
+			console.log(err)
+			res.end(err['sqlMessage']);
+		}
+		con.query("INSERT INTO LOANPAYMENTS VALUES(NULL, CURDATE(),"+mysql.escape(insertamt)+","+mysql.escape(insertlaccno)+","+mysql.escape(insertifsc)+", "+ mysql.escape(insertbifsc) +");", function (err, result, fields) {
+		  if (err) {
+			  console.log(err);
+			  res.end(err['sqlMessage']);
+		  }
+		  console.log('LoanPayment ID : ' + result.insertId + ' LoanAccNo : '+insertlaccno + 'LoanIFSC : ' + insertifsc + 'Amount : ' + insertamt +'...');
+		  res.end(result.insertId.toString());
+		});
+	  });
+});
+
+/*THIS API CALL FETCHES CUSTOMER ACCOUNT DATA FROM DATABASE*/
 app.get('/fetchData', function (req, res) {
 	faccno = req.query.faccno;
 	
@@ -214,12 +252,13 @@ app.get('/fetchData', function (req, res) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
+		  console.log('Fetched Account Data for Customer: '+ faccno + '...');
 		  res.end(JSON.stringify(result));
 		});
 	 }); 
 });
 
+/*THIS API CALL FETCHES CUSTOMER LOAN DATA FROM DATABASE*/
 app.get('/fetchlData', function (req, res) {
 	faccno = req.query.faccno;
 	
@@ -233,12 +272,13 @@ app.get('/fetchlData', function (req, res) {
 			  console.log(err);
 			  res.end(err['sqlMessage']);
 		  }
-		  console.log(result);
+		  console.log('Fetched Loan data for customer : '+ faccno +'...');
 		  res.end(JSON.stringify(result));
 		});
 	 }); 
 });
 
+/*THIS API CALL UPDATE INTEREST ON LOANS*/
 app.get('/loaninterestupdate', function (req, res) {
 	con.getConnection(function(err) {
 		if (err) {
@@ -250,11 +290,13 @@ app.get('/loaninterestupdate', function (req, res) {
 			  console.log(err);
 			  res.end('1');
 		  }
-		  console.log(result);
+		  console.log('Updated calculated interests on Loans for this month...');
 		});
 	 }); 
 });
 
+
+/*THIS API CALL UPDATE INTEREST ON DEPOSITS*/
 app.get('/depositinterestupdate', function (req, res) {
 	con.getConnection(function(err) {
 		if (err) {
@@ -266,37 +308,14 @@ app.get('/depositinterestupdate', function (req, res) {
 			  console.log(err);
 			  res.end('1');
 		  }
-		  console.log(result);
+		  console.log('Updated calculated interests on Fixed and Recurring Deposits for this month...');
 		});
 	 }); 
 });
 
-app.get('/login', function (req, res) {
-	user = req.query.user;
-	pass = req.query.pass;
-	con.getConnection(function(err) {
-		if (err) {
-			console.log(err);
-			res.end(err['sqlMessage']);
-		}
-		con.query("SELECT LOGPASSWORD FROM EMPLOYEES WHERE EMPLOYEEID="+mysql.escape(user)+";", function (err, result, fields) {
-		  if (err) {
-			  console.log(err);
-			  res.end('1');
-		  }
-		  if(result.length) {
-		  console.log(result);
-		  if(pass==result[0].LOGPASSWORD)
-			res.end('11');
-		  else
-			res.end('12');
-		  }
-		  else {
-			res.end('22');
-		  }
-		});
-	 }); 
-});
+
+
+/*THE SERVER LISTENS TO REQUESTS*/
 app.listen(3000, function () {
   console.log('Server listening on port 3000!');
 });

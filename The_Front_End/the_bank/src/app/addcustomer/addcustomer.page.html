@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Customer</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label position="floating" >Customer Name</ion-label>
+      <ion-input [(ngModel)]="name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Sex</ion-label>
+      <ion-input [(ngModel)]="sex"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Date Of Birth</ion-label>
+      <ion-input [(ngModel)]="dob"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Adress Line 1</ion-label>
+      <ion-input [(ngModel)]="add1"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Adress Line 2</ion-label>
+      <ion-input [(ngModel)]="add2"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >City</ion-label>
+      <ion-input [(ngModel)]="city"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Postal Code</ion-label>
+      <ion-input [(ngModel)]="postal"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="addcustomer()" >Add Customer</ion-button>
+    </ion-item>
+  </ion-card>
+</ion-content>

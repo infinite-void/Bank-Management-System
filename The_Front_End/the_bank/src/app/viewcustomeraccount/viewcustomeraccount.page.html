@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>View Customer Account Data</ion-title> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label position="floating" >Enter Customer ID</ion-label>
+      <ion-input [(ngModel)]="faccno"></ion-input>
+    </ion-item>
+    <ion-button (click)="fetchData()" >Fetch Data</ion-button>
+  </ion-card>
+  <ion-card>
+    <h5>Account Data</h5>
+  </ion-card>
+    <ion-item>
+      <ion-label>CUSTOMERID</ion-label>
+      <ion-label>CUSTOMERNAME</ion-label>
+      <ion-label>ACCOUNTNO</ion-label>
+      <ion-label>BRANCHIFSC</ion-label>
+      <ion-label>AREA</ion-label>
+      <ion-label>ACCOUNTTYPE</ion-label>
+      <ion-label>ACCSTATUS</ion-label>
+      <ion-label>BALANCE</ion-label>
+    </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let card of viewdata">
+      <ion-label>{{card.CUSTOMERID}}</ion-label>
+      <ion-label>{{card.CUSTOMERNAME}}</ion-label>
+      <ion-label>{{card.ACCOUNTNO}}</ion-label>
+      <ion-label>{{card.BRANCHIFSC}}</ion-label>
+      <ion-label>{{card.AREA}}</ion-label>
+      <ion-label>{{card.ACCOUNTTYPE}}</ion-label>
+      <ion-label>{{card.ACCSTATUS}}</ion-label>
+      <ion-label>{{card.BALANCE}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-card>
+    <h5>Loan Data</h5>
+  </ion-card>
+    <ion-item>
+      <ion-label>CUSTOMERID</ion-label>
+      <ion-label>LOANACCOUNTNO</ion-label>
+      <ion-label>BRANCHIFSC</ion-label>
+      <ion-label>AREA</ion-label>
+      <ion-label>PRINCIPLE</ion-label>
+      <ion-label>INTERESTAMT</ion-label>
+      <ion-label>OUTSTANDING</ion-label>
+    </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let card of viewldata">
+      <ion-label>{{card.CUSTOMERID}}</ion-label>
+      <ion-label>{{card.LOANACCOUNTNO}}</ion-label>
+      <ion-label>{{card.BRANCHIFSC}}</ion-label>
+      <ion-label>{{card.AREA}}</ion-label>
+      <ion-label>{{card.PRINCIPLE}}</ion-label>
+      <ion-label>{{card.INTERESTAMT}}</ion-label>
+      <ion-label>{{card.OUTSTANDING}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

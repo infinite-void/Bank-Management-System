@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Employee</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label position="floating" >Employee Name</ion-label>
+      <ion-input [(ngModel)]="name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Sex</ion-label>
+      <ion-input [(ngModel)]="sex"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Date Of Birth</ion-label>
+      <ion-input [(ngModel)]="dob"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Branch IFSC</ion-label>
+      <ion-input [(ngModel)]="ifsc"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Designation</ion-label>
+      <ion-input [(ngModel)]="designation"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Salary</ion-label>
+      <ion-input [(ngModel)]="salary"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Password</ion-label>
+      <ion-input [(ngModel)]="password" type="password"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Adress Line 1</ion-label>
+      <ion-input [(ngModel)]="add1"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Adress Line 2</ion-label>
+      <ion-input [(ngModel)]="add2"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >City</ion-label>
+      <ion-input [(ngModel)]="city"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Postal Code</ion-label>
+      <ion-input [(ngModel)]="postal"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="addemployee()" >Add Employee</ion-button>
+    </ion-item>
+  </ion-card>
+</ion-content>
